@@ -1,0 +1,71 @@
+server:
+  port: 8090
+
+spring:
+  application:
+    name: 流程审批中心
+  datasource: # JDBC配置
+    druid:
+      url: jdbc:mysql://localhost:3306/activiti?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true
+      username: root
+      password: root
+      # 连接池配置(通常来说只需要修改initial-size,min-idle,mac-active)
+      initial-size: 1
+      max-active: 20
+      min-idle: 1
+      #  获取连接等待的超时时间
+      max-wait: 60000
+      #打开PSCache,并且指定每个连接上PSCache的大小
+      pool-prepared-statements: true
+      max-pool-prepared-statement-per-connection-size: 20
+      validation-query: SELECT 'x'
+      test-on-borrow: false
+      test-on-retur: false
+      test-while-idle: true
+      # 配置间隔多久进行一次检查，检查需要关闭的空闲连接，单位毫秒
+      time-between-eviction-runs-millis: 60000
+      # 配置一个连接在连接池中最小的生存时间，单位毫秒
+      min-evictable-idle-time-millis: 300000
+      # 配置多个英文逗号分割
+      filters: stat
+  activiti:
+    db-history-used: true  #使用历史表，如果不配置，则工程启动后可以检查数据库，只建立了17张表，历史表没有建立
+    history-level: full    #记录全部历史操作
+    database-schema-update: true   #自动建表
+    #    flase： 默认值。activiti在启动时，会对比数据库表中保存的版本，如果没有表或者版本不匹配，将抛出异常。
+    #    true： activiti会对数据库中所有表进行更新操作。如果表不存在，则自动创建。
+    #    create_drop： 在activiti启动时创建表，在关闭时删除表（必须手动关闭引擎，才能删除表）。
+    #    drop-create： 在activiti启动时删除原来的旧表，然后在创建新表（不需要手动关闭引擎
+    check-process-definitions: false # 自动部署验证设置:true-开启（默认）、false-关闭  在resource目录下添加processes文件夹，并且文件夹不能为空
+    #    main:
+    #      allow-bean-definition-overriding: true #当遇到同样名字的时候，是否允许覆盖注册
+    database-schema: atc  #置建表策略，如果没有表，自动创建表  修改这个地方为大写
+    #关闭springAutoDeployment自动部署流程定义
+    deployment-mode: never-fail
+  main:
+    allow-bean-definition-overriding: true
+swagger:
+  enabled: true
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    auto-mapping-behavior: full
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      id-type: ID_WORKER
+
+jwt:
+  header: Authorization
+  # 令牌前缀
+  token-start-with: Bearer
+  # 使用Base64对该令牌进行编码
+  base64-secret: aks93ha98d4bASDFH2832D
+  # 令牌过期时间 此处单位/毫秒
+  token-validity-in-seconds: 14400000
+
+itcast:
+  feign:
+    authority-server-url: http://192.168.138.100:8764
+  application:
